@@ -190,6 +190,17 @@ const lessons = {
       },
     ],
   },
+  8: {
+    type: "comment",
+    title: "Comment Section",
+    content:`  <div id="post-section">
+            <h3>Share Your Thoughts so far</h3>
+            <input type="text" id="post-name" placeholder="Your Name" />
+            <textarea id="post-input" placeholder="Write a post..."></textarea>
+            <button onclick="submitPost()">Submit Post</button>
+            <div id="posts-list"></div>
+        </div>  `,
+  }
 };
 
 let currentLesson = 1;
@@ -216,10 +227,58 @@ function showLesson(lessonId) {
       `;
   } else if (lesson.type === "quiz") {
     renderQuiz(lesson.questions);
-  }
-
+  }else if (lesson.type === "comment") {
+    contentDiv.innerHTML = `<h2>${lesson.title}</h2><p>${lesson.content}</p>`;
+    renderPosts();
+  } 
+  
   updateNavButtons();
 }
+
+function submitPost() {
+    const name = document.getElementById('post-name').value.trim();
+    const postContent = document.getElementById('post-input').value.trim();
+
+    if (name && postContent) {
+        const posts = getPosts(currentLesson);
+        posts.push({ name, content: postContent });
+        savePosts(currentLesson, posts);
+        document.getElementById('post-name').value = '';
+        document.getElementById('post-input').value = '';
+        renderPosts();
+    } else {
+        alert("Please enter both your name and a post.");
+    }
+}
+
+function getPosts(lessonId) {
+    return JSON.parse(localStorage.getItem(`posts_${lessonId}`)) || [];
+}
+
+function savePosts(lessonId, posts) {
+    localStorage.setItem(`posts_${lessonId}`, JSON.stringify(posts));
+}
+
+function renderPosts() {
+    const posts = getPosts(currentLesson);
+    const postsList = document.getElementById('posts-list');
+    postsList.innerHTML = posts.map((post, index) => `
+        <div class="post">
+            <div class="post-content">
+                <strong>${post.name}</strong>: ${post.content}
+            </div>
+            <button class="delete-btn" onclick="deletePost(${index})">Delete</button>
+        </div>
+    `).join('');
+}
+
+function deletePost(index) {
+    const posts = getPosts(currentLesson);
+    posts.splice(index, 1);
+    savePosts(currentLesson, posts);
+    renderPosts();
+}
+
 
 function renderQuiz(questions) {
   const contentDiv = document.getElementById("content");
@@ -282,6 +341,7 @@ function submitQuiz() {
   feedbackHTML += `<p><strong>Your Score: ${score} out of ${questions.length}</strong></p>`;
   document.getElementById("quiz-feedback").innerHTML = feedbackHTML;
 }
+
 
 function arraysEqual(a, b) {
   return a.length === b.length && a.every((val, index) => val === b[index]);

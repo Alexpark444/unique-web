@@ -14,7 +14,7 @@
             <a href="#" onclick="showLesson(1)">Lesson 1</a>
             <a href="#" onclick="showLesson(2)">Lesson 2</a>
             <a href="#" onclick="showLesson(3)">Quiz 1</a>
-            <a class="lesson-four" href="#" onclick="showLesson(4)">Lesson3 </a>
+            <a class="lesson-four" href="#" onclick="addComment()">Lesson3 </a>
             <button id="nextNavBtn" class="nav-right" onclick="nextLesson()">Next</button>
         </nav>
     </header>
@@ -23,10 +23,20 @@
         <h2>Welcome</h2>
         <p>Select a lesson or quiz to get started!</p>
 
+        <div id="post-section">
+            <h3>Share Your Thoughts</h3>
+            
+            <input type="text" id="post-name" placeholder="Your Name" />
+            <textarea id="post-input" placeholder="Write a post..."></textarea>
+            <button class="submit-post" onclick="submitPost()">Submit Post</button>
+            <div id="posts-list"></div>
+        </div>                   
+
         <div class="main-navigation">
             <button id="mainPrevBtn" onclick="previousLesson()" disabled>Previous</button>
             <button id="mainNextBtn" onclick="nextLesson()">Next</button>
         </div>
+
     </main>
 
     <script src="script.js"></script>
